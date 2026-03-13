@@ -2,3 +2,8 @@
 *.log
 node_modules/
 .env
+
+# Local scripts
+*.py
+seed-drafts.sql
+supabase-schema.sql
