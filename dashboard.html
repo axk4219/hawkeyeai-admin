@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Dashboard | Hawk Eye AI</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="assets/optimized/logo-300.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="nav-logo">
+        <img src="assets/optimized/logo-300.png" alt="Hawk Eye AI" width="300" height="300">
+      </a>
+      <ul class="nav-links">
+        <li><a href="#gap-analysis">Gap Analysis</a></li>
+        <li><a href="#approval-queue">Approval Queue</a></li>
+        <li><a href="#published">Published</a></li>
+      </ul>
+      <div class="nav-right">
+        <span class="nav-user" id="navUserEmail"></span>
+        <button class="btn btn-ghost btn-small" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Content -->
+  <div class="dashboard-page">
+
+    <!-- Loading State (shown while checking auth) -->
+    <div class="loading-state" id="pageLoading">
+      <div class="spinner"></div>
+      <p>Loading dashboard...</p>
+    </div>
+
+    <!-- Main Content (hidden until authenticated) -->
+    <div id="dashboardContent" class="hidden">
+
+      <!-- ============================================================ -->
+      <!-- SECTION 1: GAP ANALYSIS -->
+      <!-- ============================================================ -->
+      <section class="section" id="gap-analysis">
+        <div class="container">
+          <div class="section-header">
+            <h2>Content Gap Analysis</h2>
+            <p>Research-driven topic opportunities identified by the pipeline</p>
+          </div>
+
+          <!-- Stats Bar -->
+          <div class="stats-bar" id="gapStats">
+            <div class="stat-card stat-card--cyan">
+              <div class="stat-label">Total Gaps</div>
+              <div class="stat-value" id="statTotal">-</div>
+              <div class="stat-sub">Topics identified</div>
+            </div>
+            <div class="stat-card stat-card--green">
+              <div class="stat-label">High Priority</div>
+              <div class="stat-value" id="statHigh">-</div>
+              <div class="stat-sub">Score 8-10</div>
+            </div>
+            <div class="stat-card stat-card--magenta">
+              <div class="stat-label">Medium Priority</div>
+              <div class="stat-value" id="statMedium">-</div>
+              <div class="stat-sub">Score 5-7</div>
+            </div>
+            <div class="stat-card stat-card--blue">
+              <div class="stat-label">Last Research</div>
+              <div class="stat-value stat-value--small" id="statLastDate">-</div>
+              <div class="stat-sub">Most recent scan</div>
+            </div>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="filter-bar">
+            <label>Filter:</label>
+            <select class="filter-select" id="filterSite">
+              <option value="all">All Sites</option>
+              <option value="main">Main (hawkeyeai.io)</option>
+              <option value="hospitality">Hospitality</option>
+            </select>
+            <select class="filter-select" id="filterPriority">
+              <option value="all">All Priorities</option>
+              <option value="high">High (8-10)</option>
+              <option value="medium">Medium (5-7)</option>
+              <option value="low">Low (1-4)</option>
+            </select>
+            <select class="filter-select" id="filterCategory">
+              <option value="all">All Categories</option>
+            </select>
+            <select class="filter-select" id="filterVolume">
+              <option value="all">All Volumes</option>
+              <option value="high">High Volume</option>
+              <option value="medium">Medium Volume</option>
+              <option value="low">Low Volume</option>
+            </select>
+          </div>
+
+          <!-- Gap Analysis Table -->
+          <div class="table-wrapper">
+            <table class="gap-table">
+              <thead>
+                <tr>
+                  <th data-sort="priority_score">Priority <span class="sort-icon"></span></th>
+                  <th data-sort="site">Site <span class="sort-icon"></span></th>
+                  <th data-sort="headline">Topic <span class="sort-icon"></span></th>
+                  <th data-sort="category">Category <span class="sort-icon"></span></th>
+                  <th data-sort="search_volume_tier">Volume <span class="sort-icon"></span></th>
+                  <th>Keywords</th>
+                  <th>Rationale</th>
+                </tr>
+              </thead>
+              <tbody id="gapTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty state -->
+          <div class="empty-state hidden" id="gapEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <h3>No gap analysis results</h3>
+            <p>The pipeline hasn't generated any research results yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 2: APPROVAL QUEUE -->
+      <!-- ============================================================ -->
+      <section class="section" id="approval-queue" style="background: var(--bg-secondary);">
+        <div class="container">
+          <div class="section-header">
+            <h2>Blog Post Approval Queue</h2>
+            <p>Review and approve drafted posts before they go live</p>
+          </div>
+
+          <!-- 2A: Main Website -->
+          <div class="section-title-row">
+            <h2>hawkeyeai.io</h2>
+            <span class="badge badge-cyan">Main Site</span>
+            <span class="section-count" id="mainDraftCount">0</span>
+          </div>
+
+          <div class="approval-grid" id="mainApprovalGrid">
+            <!-- Populated by JS -->
+          </div>
+          <div class="empty-state hidden" id="mainApprovalEmpty">
+            <h3>No pending posts</h3>
+            <p>All main site posts have been reviewed.</p>
+          </div>
+
+          <!-- Divider -->
+          <div class="site-divider">
+            <span class="site-divider-label">Hospitality Site</span>
+          </div>
+
+          <!-- 2B: Hospitality Website -->
+          <div class="section-title-row">
+            <h2>hospitality.hawkeyeai.io</h2>
+            <span class="badge badge-magenta">Hospitality</span>
+            <span class="section-count" id="hospitalityDraftCount">0</span>
+          </div>
+
+          <div class="approval-grid" id="hospitalityApprovalGrid">
+            <!-- Populated by JS -->
+          </div>
+          <div class="empty-state hidden" id="hospitalityApprovalEmpty">
+            <h3>No pending posts</h3>
+            <p>All hospitality site posts have been reviewed.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 3: PUBLISHED POSTS -->
+      <!-- ============================================================ -->
+      <section class="section" id="published">
+        <div class="container">
+          <div class="section-title-row">
+            <h2>Published Posts</h2>
+            <span class="section-count" id="publishedCount">0</span>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="published-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Site</th>
+                  <th>Category</th>
+                  <th>Published</th>
+                  <th>Words</th>
+                  <th>SEO</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="publishedTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="empty-state hidden" id="publishedEmpty">
+            <h3>No published posts yet</h3>
+            <p>Approved posts will appear here after publishing.</p>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /dashboardContent -->
+  </div><!-- /dashboard-page -->
+
+  <!-- Reject Modal -->
+  <div class="modal-overlay" id="rejectModal">
+    <div class="modal">
+      <h3>Reject Blog Post</h3>
+      <p>Provide feedback on why this post was rejected. The pipeline can use this to improve.</p>
+      <input type="hidden" id="rejectPostId">
+      <textarea id="rejectNotes" placeholder="What needs to be changed? (optional)"></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-ghost btn-small" id="rejectCancel">Cancel</button>
+        <button class="btn btn-danger btn-small" id="rejectConfirm">Reject Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="assets/optimized/logo-300.png" alt="Hawk Eye AI" width="300" height="300">
+          <span>&copy; 2026 Hawk Eye AI. All rights reserved.</span>
+        </div>
+        <ul class="footer-links">
+          <li><a href="https://www.hawkeyeai.io" target="_blank" rel="noopener">Main Site</a></li>
+          <li><a href="https://hospitality.hawkeyeai.io" target="_blank" rel="noopener">Hospitality Site</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Auth guard + UI init
+    (async function() {
+      var session = await Auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Show user email
+      var navEmail = document.getElementById('navUserEmail');
+      if (navEmail) navEmail.textContent = session.user.email;
+
+      // Hide loading, show dashboard
+      var loading = document.getElementById('pageLoading');
+      var content = document.getElementById('dashboardContent');
+      if (loading) loading.classList.add('hidden');
+      if (content) content.classList.remove('hidden');
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        Auth.signOut();
+      });
+    })();
+  </script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

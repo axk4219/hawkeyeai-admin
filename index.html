@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Hawk Eye AI Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="assets/optimized/logo-300.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    .login-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .login-page::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-logo img {
+      height: 300px;
+      width: auto;
+    }
+
+    .login-title {
+      text-align: center;
+      margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .login-card .btn-primary {
+      width: 100%;
+      padding: 0.875rem;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    .login-error {
+      background: rgba(255, 0, 255, 0.1);
+      border: 1px solid rgba(255, 0, 255, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      color: #FF00FF;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .login-error.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <main class="login-page">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="assets/optimized/logo-300.png" alt="Hawk Eye AI Logo" width="300" height="300">
+      </div>
+
+      <h1 class="login-title">Content Dashboard</h1>
+      <p class="login-subtitle">Sign in to manage your content pipeline</p>
+
+      <div class="login-error" id="loginError"></div>
+
+      <!-- No <form> tag - using button click to avoid native submit issues -->
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input type="email" id="email" class="form-input" placeholder="you@hawkeyeai.io" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input type="password" id="password" class="form-input" placeholder="Enter your password" autocomplete="current-password">
+      </div>
+
+      <button type="button" class="btn btn-primary" id="loginBtn" onclick="handleLogin()">
+        Sign In
+      </button>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    // ---- Config ----
+    var SUPABASE_URL = 'https://ddoglggqvtdzjtiruomq.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkb2dsZ2dxdnRkemp0aXJ1b21xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NTk5ODQsImV4cCI6MjA4ODMzNTk4NH0.mdog6MhpVGpJTrIkuROb3AdsSLoUEC8Pp7eWG4ysMeE';
+
+    var sb = null;
+    var errorDiv = document.getElementById('loginError');
+    var loginBtn = document.getElementById('loginBtn');
+
+    // Init Supabase
+    try {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch(e) {
+      showError('Supabase failed to load: ' + e.message);
+    }
+
+    // Check if already logged in
+    if (sb) {
+      sb.auth.getSession().then(function(result) {
+        if (result.data && result.data.session) {
+          window.location.href = 'dashboard.html';
+        }
+      });
+    }
+
+    // Allow Enter key to submit
+    document.getElementById('password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    function showError(msg) {
+      errorDiv.textContent = msg;
+      errorDiv.classList.add('active');
+    }
+
+    async function handleLogin() {
+      var email = document.getElementById('email').value.trim();
+      var password = document.getElementById('password').value;
+
+      errorDiv.classList.remove('active');
+
+      if (!email || !password) {
+        showError('Please enter both email and password.');
+        return;
+      }
+
+      if (!sb) {
+        showError('Supabase client not initialized. Check browser console (Cmd+Option+J).');
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in...';
+
+      try {
+        var result = await sb.auth.signInWithPassword({ email: email, password: password });
+
+        if (result.error) {
+          showError(result.error.message);
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Sign In';
+          return;
+        }
+
+        if (result.data && result.data.session) {
+          window.location.href = 'dashboard.html';
+        } else {
+          showError('No session returned. Make sure the user exists in Supabase Auth > Users.');
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Sign In';
+        }
+      } catch(e) {
+        showError('Error: ' + e.message);
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+      }
+    }
+  </script>
+</body>
+</html>
