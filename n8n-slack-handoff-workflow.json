@@ -1,0 +1,77 @@
+{
+  "name": "Chatbot — Human Handoff Alert",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatbot-handoff-alert",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "handoff-001",
+      "name": "Handoff Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [260, 300],
+      "webhookId": "chatbot-handoff-alert"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"sessionId\": \"{{ $json.body.sessionId || $json.sessionId }}\",\n  \"site\": \"{{ $json.body.site || $json.site }}\",\n  \"lastMessage\": \"{{ ($json.body.lastMessage || $json.lastMessage || '').substring(0, 300) }}\",\n  \"siteLabel\": \"{{ ($json.body.site || $json.site) === 'hospitality' ? 'Hospitality (Hotels & Restaurants)' : 'Home Services' }}\",\n  \"dashboardUrl\": \"https://admin.hawkeyeai.io/conversations.html\"\n}",
+        "options": {}
+      },
+      "id": "handoff-002",
+      "name": "Format Alert Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "channel": "#chatbot-alerts",
+        "text": "=:rotating_light: *Customer requesting human assistance*\n\n*Site:* {{ $json.siteLabel }}\n*Session:* `{{ $json.sessionId }}`\n*Last message:* \"{{ $json.lastMessage }}\"\n\n:point_right: <{{ $json.dashboardUrl }}|Open Conversations Dashboard>",
+        "otherOptions": {}
+      },
+      "id": "handoff-003",
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [700, 300],
+      "credentials": {
+        "slackApi": {
+          "id": "REPLACE_WITH_SLACK_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_SLACK_CREDENTIAL_NAME"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Handoff Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format Alert Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Alert Data": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
