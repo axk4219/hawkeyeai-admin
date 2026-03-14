@@ -89,6 +89,18 @@ CREATE POLICY "Authenticated users can update chat_messages"
   USING (true)
   WITH CHECK (true);
 
+-- chat_messages: authenticated users can delete (admin dashboard)
+CREATE POLICY "Authenticated users can delete chat_messages"
+  ON chat_messages FOR DELETE
+  TO authenticated
+  USING (true);
+
+-- chat_sessions: authenticated users can delete (admin dashboard)
+CREATE POLICY "Authenticated users can delete chat_sessions"
+  ON chat_sessions FOR DELETE
+  TO authenticated
+  USING (true);
+
 -- chat_messages: service role can insert/update (CF Worker logging + marking delivered)
 CREATE POLICY "Service role can insert chat_messages"
   ON chat_messages FOR INSERT
