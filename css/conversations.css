@@ -4,7 +4,7 @@
 
 /* --- Page Layout --- */
 .conversations-page {
-  padding-top: 72px;
+  padding-top: 200px;
   height: 100vh;
   display: flex;
   flex-direction: column;
