@@ -115,7 +115,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
+  height: 200px;
 }
 
 .nav-logo {
@@ -124,9 +124,9 @@ img {
 }
 
 .nav-logo img {
-  height: 60px !important;
+  height: 200px !important;
   width: auto !important;
-  max-height: 60px !important;
+  max-height: 200px !important;
   object-fit: contain;
 }
 
