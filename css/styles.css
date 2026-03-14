@@ -105,6 +105,7 @@ img {
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-subtle);
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .nav-inner {
@@ -123,9 +124,10 @@ img {
 }
 
 .nav-logo img {
-  height: 60px;
-  width: auto;
-  max-height: 60px;
+  height: 60px !important;
+  width: auto !important;
+  max-height: 60px !important;
+  object-fit: contain;
 }
 
 .nav-links {
