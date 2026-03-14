@@ -117,9 +117,15 @@ img {
   height: 72px;
 }
 
+.nav-logo {
+  display: flex;
+  align-items: center;
+}
+
 .nav-logo img {
   height: 60px;
   width: auto;
+  max-height: 60px;
 }
 
 .nav-links {
