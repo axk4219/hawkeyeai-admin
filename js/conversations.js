@@ -27,6 +27,7 @@
   var sessionSearch = document.getElementById('sessionSearch');
   var statActive = document.getElementById('statActive');
   var statHuman = document.getElementById('statHuman');
+  var deleteConvBtn = document.getElementById('deleteConvBtn');
 
   // --- Init ---
   async function init() {
@@ -78,6 +79,9 @@
     // Take Over / Hand Back
     takeOverBtn.addEventListener('click', function() { setMode('human'); });
     handBackBtn.addEventListener('click', function() { setMode('ai'); });
+
+    // Delete conversation
+    deleteConvBtn.addEventListener('click', deleteConversation);
   }
 
   // --- Load Sessions ---
@@ -257,6 +261,33 @@
 
     sendReplyBtn.disabled = false;
     replyInput.focus();
+  }
+
+  // --- Delete Conversation ---
+  async function deleteConversation() {
+    if (!activeSessionId) return;
+    if (!confirm('Delete this conversation? This cannot be undone.')) return;
+
+    // Delete messages first (cascade should handle this, but be explicit)
+    await supabase
+      .from('chat_messages')
+      .delete()
+      .eq('session_id', activeSessionId);
+
+    await supabase
+      .from('chat_sessions')
+      .delete()
+      .eq('session_id', activeSessionId);
+
+    // Remove from local state
+    sessions = sessions.filter(function(s) { return s.session_id !== activeSessionId; });
+    activeSessionId = null;
+
+    // Reset UI
+    chatPanel.classList.add('hidden');
+    emptyMain.classList.remove('hidden');
+    renderSessionList();
+    updateStats();
   }
 
   // --- Set Mode (Take Over / Hand Back) ---
