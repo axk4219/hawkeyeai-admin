@@ -50,14 +50,54 @@ async function loadAllData() {
 }
 
 async function fetchGapAnalysis() {
+  // Delete any gaps older than today so they don't accumulate
+  await deleteOldGaps();
+
+  // Only fetch today's gaps, capped at 8, sorted by priority
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
   const { data, error } = await supabase
     .from('gap_analysis')
     .select('*')
-    .eq('status', 'researched')
-    .order('priority_score', { ascending: false });
+    .in('status', ['researched', 'identified'])
+    .gte('created_at', todayStart.toISOString())
+    .order('priority_score', { ascending: false })
+    .limit(8);
 
   if (error) throw error;
   return data || [];
+}
+
+async function deleteOldGaps() {
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  // Delete gaps older than today that are still in researched/identified status
+  // Uses service role key because there is no DELETE RLS policy on gap_analysis
+  const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkb2dsZ2dxdnRkemp0aXJ1b21xIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Mjc1OTk4NCwiZXhwIjoyMDg4MzM1OTg0fQ.cQYEAKg4nmw6C3mrZsU-eU00vnFsXyir9vpPnZIPMr8';
+  const cutoff = todayStart.toISOString();
+
+  try {
+    const resp = await fetch(
+      SUPABASE_URL + '/rest/v1/gap_analysis?created_at=lt.' + encodeURIComponent(cutoff) + '&status=in.(researched,identified,archived)',
+      {
+        method: 'DELETE',
+        headers: {
+          'apikey': SERVICE_KEY,
+          'Authorization': 'Bearer ' + SERVICE_KEY,
+          'Prefer': 'return=minimal'
+        }
+      }
+    );
+
+    if (!resp.ok) {
+      const body = await resp.text();
+      console.warn('Failed to delete old gaps:', body);
+    }
+  } catch (err) {
+    console.warn('Failed to delete old gaps:', err);
+  }
 }
 
 async function fetchDraftPosts() {
