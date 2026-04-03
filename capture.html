@@ -148,7 +148,17 @@
 
       </form>
 
-      <button type="button" class="btn btn-primary btn-large" id="submitBtn" onclick="handleSubmit()" style="cursor:pointer; -webkit-tap-highlight-color: rgba(0,255,255,0.2);">Save Contact & Generate Email</button>
+      <button type="button" class="btn btn-primary btn-large" id="submitBtn" style="cursor:pointer; position:relative; z-index:100; -webkit-tap-highlight-color: rgba(0,255,255,0.2);">Save Contact & Generate Email</button>
+
+      <script data-cfasync="false">
+        document.getElementById('submitBtn').addEventListener('click', function() {
+          if (typeof handleSubmit === 'function') {
+            handleSubmit();
+          } else {
+            alert('Scripts still loading. Please wait a moment and try again.');
+          }
+        });
+      </script>
 
     </div>
   </div>
