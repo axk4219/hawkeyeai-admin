@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Networking Follow-ups | Hawk Eye AI</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/png" href="assets/optimized/logo-300.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/networking.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="nav-logo">
+        <img src="assets/optimized/logo-300.png" alt="Hawk Eye AI">
+      </a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Content</a></li>
+        <li><a href="conversations.html">Conversations</a></li>
+        <li><a href="networking.html" class="active">Networking</a></li>
+        <li><a href="capture.html">Capture</a></li>
+      </ul>
+      <div class="nav-right">
+        <span class="nav-user" id="navUserEmail"></span>
+        <button class="btn btn-ghost btn-small" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="networking-page">
+
+    <div class="loading-state" id="pageLoading">
+      <div class="spinner"></div>
+      <p>Loading networking data...</p>
+    </div>
+
+    <div id="networkingContent" class="hidden">
+
+      <!-- Stats Bar -->
+      <section class="section">
+        <div class="container">
+          <div class="section-header">
+            <h2>Networking Follow-ups</h2>
+            <p>Review and send follow-up emails to contacts from events</p>
+          </div>
+
+          <div class="stats-bar">
+            <div class="stat-card stat-card--cyan">
+              <div class="stat-label">Total Contacts</div>
+              <div class="stat-value" id="statTotal">-</div>
+              <div class="stat-sub">All time</div>
+            </div>
+            <div class="stat-card stat-card--magenta">
+              <div class="stat-label">Pending Review</div>
+              <div class="stat-value" id="statPending">-</div>
+              <div class="stat-sub">Emails to approve</div>
+            </div>
+            <div class="stat-card stat-card--blue">
+              <div class="stat-label">Needs Email</div>
+              <div class="stat-value" id="statNeedsEmail">-</div>
+              <div class="stat-sub">Missing email address</div>
+            </div>
+            <div class="stat-card stat-card--green">
+              <div class="stat-label">Sent</div>
+              <div class="stat-value" id="statSent">-</div>
+              <div class="stat-sub">Follow-ups sent</div>
+            </div>
+          </div>
+
+          <!-- Tab Navigation -->
+          <div class="net-tabs">
+            <button class="net-tab active" data-tab="pending">Pending Review <span class="tab-count" id="tabPendingCount">0</span></button>
+            <button class="net-tab" data-tab="needs-email">Needs Email <span class="tab-count" id="tabNeedsCount">0</span></button>
+            <button class="net-tab" data-tab="sent">Sent <span class="tab-count" id="tabSentCount">0</span></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab: Pending Review -->
+      <section class="section" id="tab-pending">
+        <div class="container">
+          <div class="approval-grid" id="pendingGrid">
+            <!-- Populated by JS -->
+          </div>
+          <div class="empty-state" id="pendingEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <h3>No emails pending review</h3>
+            <p>Capture a business card to get started. Drafts will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab: Needs Email -->
+      <section class="section hidden" id="tab-needs-email">
+        <div class="container">
+          <div class="needs-email-list" id="needsEmailList">
+            <!-- Populated by JS -->
+          </div>
+          <div class="empty-state" id="needsEmailEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <h3>All contacts have email addresses</h3>
+            <p>Contacts without emails will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab: Sent -->
+      <section class="section hidden" id="tab-sent">
+        <div class="container">
+          <div class="table-wrapper" id="sentTableWrapper">
+            <table class="sent-table">
+              <thead>
+                <tr>
+                  <th>Contact</th>
+                  <th>Company</th>
+                  <th>Event</th>
+                  <th>Sent</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="sentTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="sentEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            <h3>No emails sent yet</h3>
+            <p>Approve pending drafts to send follow-up emails.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Email Preview Modal -->
+  <div class="modal-overlay" id="previewModal">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h3 id="previewModalTitle">Email Preview</h3>
+        <button class="modal-close" id="previewClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="preview-subject">
+          <span class="preview-label">Subject:</span>
+          <span id="previewSubject"></span>
+        </div>
+        <div class="preview-to">
+          <span class="preview-label">To:</span>
+          <span id="previewTo"></span>
+        </div>
+        <div class="email-preview-frame" id="previewFrame"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost btn-small" id="previewReject">Reject</button>
+        <button class="btn btn-outline btn-small" id="previewEdit">Edit Subject</button>
+        <button class="btn btn-primary btn-small" id="previewApprove">Approve & Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Email Modal -->
+  <div class="modal-overlay" id="addEmailModal">
+    <div class="modal">
+      <h3>Add Email Address</h3>
+      <p id="addEmailContactName"></p>
+      <div class="form-group">
+        <label class="form-label" for="addEmailInput">Email Address</label>
+        <input type="email" class="form-input" id="addEmailInput" placeholder="john@company.com">
+      </div>
+      <input type="hidden" id="addEmailContactId">
+      <div class="modal-actions">
+        <button class="btn btn-ghost btn-small" id="addEmailCancel">Cancel</button>
+        <button class="btn btn-primary btn-small" id="addEmailSave">Save & Generate Draft</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="assets/optimized/logo-300.png" alt="Hawk Eye AI">
+          <span>&copy; 2026 Hawk Eye AI. All rights reserved.</span>
+        </div>
+        <ul class="footer-links">
+          <li><a href="https://www.hawkeyeai.io" target="_blank" rel="noopener">Main Site</a></li>
+          <li><a href="capture.html">Capture Card</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (async function() {
+      var session = await Auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+        return;
+      }
+      var navEmail = document.getElementById('navUserEmail');
+      if (navEmail) navEmail.textContent = session.user.email;
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        Auth.signOut();
+      });
+      document.getElementById('pageLoading').classList.add('hidden');
+      document.getElementById('networkingContent').classList.remove('hidden');
+    })();
+  </script>
+  <script src="js/networking.js"></script>
+</body>
+</html>

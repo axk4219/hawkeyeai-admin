@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Card Capture | Hawk Eye AI</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Card Capture">
+
+  <link rel="icon" type="image/png" href="assets/optimized/logo-300.png">
+  <link rel="apple-touch-icon" href="assets/optimized/logo-300.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/capture.css">
+</head>
+<body>
+
+  <!-- Minimal Nav -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="nav-logo">
+        <img src="assets/optimized/logo-300.png" alt="Hawk Eye AI">
+      </a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Content</a></li>
+        <li><a href="conversations.html">Conversations</a></li>
+        <li><a href="networking.html">Networking</a></li>
+        <li><a href="capture.html" class="active">Capture</a></li>
+      </ul>
+      <div class="nav-right">
+        <span class="nav-user" id="navUserEmail"></span>
+        <button class="btn btn-ghost btn-small" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="capture-page">
+
+    <!-- Loading State -->
+    <div class="loading-state" id="pageLoading">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <div id="captureContent" class="hidden">
+
+      <div class="capture-header">
+        <h1>Capture Business Card</h1>
+        <p>Snap a photo or enter details manually</p>
+      </div>
+
+      <!-- Camera Section -->
+      <div class="capture-camera-section">
+        <div class="camera-upload" id="cameraUpload">
+          <input type="file" accept="image/*" capture="environment" id="cardFileInput" class="hidden">
+          <button class="camera-btn" id="cameraBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            <span>Take Photo of Card</span>
+          </button>
+        </div>
+
+        <!-- Image Preview -->
+        <div class="card-preview hidden" id="previewContainer">
+          <img id="cardPreview" alt="Business card preview">
+          <div class="preview-actions">
+            <button class="btn btn-primary btn-small" id="extractBtn">Extract Info</button>
+            <button class="btn btn-ghost btn-small" id="retakeBtn">Retake</button>
+          </div>
+        </div>
+
+        <!-- Extracting indicator -->
+        <div class="extracting-state hidden" id="extractingState">
+          <div class="spinner"></div>
+          <p>Reading business card...</p>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <form id="contactForm" class="capture-form">
+        <div class="form-section-label">Contact Info</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="firstName">First Name *</label>
+            <input type="text" class="form-input" id="firstName" placeholder="John" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lastName">Last Name *</label>
+            <input type="text" class="form-input" id="lastName" placeholder="Smith" required autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" class="form-input" id="email" placeholder="john@company.com" autocomplete="off">
+          <span class="form-hint">Leave blank if not on card - we'll flag it for later</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone</label>
+            <input type="tel" class="form-input" id="phone" placeholder="(555) 123-4567" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="jobTitle">Job Title</label>
+            <input type="text" class="form-input" id="jobTitle" placeholder="CEO, Manager, etc." autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="company">Company</label>
+            <input type="text" class="form-input" id="company" placeholder="Acme Corp" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="website">Website</label>
+            <input type="url" class="form-input" id="website" placeholder="https://acme.com" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="form-section-label">Event Details</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="eventName">Event Name *</label>
+            <input type="text" class="form-input" id="eventName" placeholder="NYC Tech Meetup" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="eventDate">Event Date *</label>
+            <input type="date" class="form-input" id="eventDate" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="notes">Notes</label>
+          <textarea class="form-input form-textarea" id="notes" placeholder="Anything you discussed, their pain points, follow-up topics..." rows="3"></textarea>
+          <span class="form-hint">Helps personalize the follow-up email</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-large" id="submitBtn">Save Contact & Generate Email</button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/capture.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

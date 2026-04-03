@@ -1,0 +1,416 @@
+/* ============================================================
+   Hawk Eye AI - Networking Follow-ups Page
+   ============================================================ */
+
+.networking-page {
+  padding-top: 72px;
+  min-height: 100vh;
+}
+
+/* --- Stats Bar (reuses dashboard pattern) --- */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.stat-card--cyan::before { background: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,255,255,0.5); }
+.stat-card--magenta::before { background: var(--neon-magenta); box-shadow: 0 0 10px rgba(255,0,255,0.5); }
+.stat-card--blue::before { background: var(--neon-blue); box-shadow: 0 0 10px rgba(46,139,255,0.5); }
+.stat-card--green::before { background: #00FF88; box-shadow: 0 0 10px rgba(0,255,136,0.5); }
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.stat-sub {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-top: 0.35rem;
+}
+
+/* --- Tabs --- */
+.net-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.net-tab {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.net-tab:hover {
+  color: var(--text-primary);
+}
+
+.net-tab.active {
+  color: var(--neon-cyan);
+  border-bottom-color: var(--neon-cyan);
+}
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 0.4rem;
+  border-radius: 50px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* --- Pending Review Cards --- */
+.approval-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.net-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.net-card:hover {
+  border-color: var(--border-active);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.net-card-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.net-card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.net-card-detail {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.net-card-detail strong {
+  color: var(--text-secondary);
+}
+
+.net-card-event {
+  font-size: 0.8rem;
+  color: var(--neon-cyan);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.net-card-subject {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--neon-cyan);
+}
+
+.net-card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.net-card-actions .btn {
+  flex: 1;
+}
+
+/* --- Needs Email List --- */
+.needs-email-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.needs-email-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: all 0.2s;
+}
+
+.needs-email-card:hover {
+  border-color: var(--border-active);
+}
+
+.needs-email-info {
+  flex: 1;
+}
+
+.needs-email-name {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.needs-email-meta {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-top: 0.25rem;
+}
+
+/* --- Sent Table --- */
+.sent-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sent-table thead th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sent-table tbody tr {
+  transition: background 0.2s;
+}
+
+.sent-table tbody tr:hover {
+  background: var(--bg-card-hover);
+}
+
+.sent-table tbody td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(30, 30, 48, 0.5);
+  font-size: 0.9rem;
+}
+
+.sent-table .name-cell {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* --- Modals --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  width: 90%;
+  max-width: 480px;
+  transform: translateY(20px);
+  transition: transform 0.3s;
+}
+
+.modal-wide {
+  max-width: 720px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay.active .modal {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.modal-header h3 {
+  font-size: 1.2rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  justify-content: flex-end;
+}
+
+/* Preview specific */
+.preview-subject,
+.preview-to {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.preview-label {
+  font-weight: 700;
+  color: var(--text-tertiary);
+  margin-right: 0.5rem;
+}
+
+.email-preview-frame {
+  margin-top: 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.email-preview-frame iframe {
+  width: 100%;
+  height: 450px;
+  border: none;
+}
+
+/* --- Table wrapper (reuse) --- */
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+}
+
+/* --- Toast (reuse) --- */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  z-index: 3000;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s;
+  max-width: 360px;
+}
+
+.toast.active { transform: translateY(0); opacity: 1; }
+.toast--success { background: rgba(0,255,136,0.15); border: 1px solid rgba(0,255,136,0.3); color: #00FF88; }
+.toast--error { background: rgba(255,0,255,0.15); border: 1px solid rgba(255,0,255,0.3); color: var(--neon-magenta); }
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .approval-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .networking-page { padding-top: 60px; }
+  .stats-bar { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .stat-value { font-size: 1.5rem; }
+  .net-tabs { overflow-x: auto; }
+  .net-card-actions { flex-direction: column; }
+  .needs-email-card { flex-direction: column; align-items: flex-start; }
+  .modal-wide { max-width: 95%; }
+}
+
+@media (max-width: 480px) {
+  .stats-bar { grid-template-columns: 1fr; }
+}

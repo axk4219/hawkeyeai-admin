@@ -1,0 +1,211 @@
+/* ============================================================
+   Hawk Eye AI - Business Card Capture (PWA)
+   Mobile-first design
+   ============================================================ */
+
+.capture-page {
+  padding-top: 72px;
+  min-height: 100vh;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+  padding-bottom: 4rem;
+}
+
+.capture-header {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+}
+
+.capture-header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.capture-header p {
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+}
+
+/* --- Camera Section --- */
+.capture-camera-section {
+  margin-bottom: 2rem;
+}
+
+.camera-upload {
+  text-align: center;
+}
+
+.camera-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 2rem;
+  background: var(--bg-card);
+  border: 2px dashed var(--border-active);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.camera-btn:hover,
+.camera-btn:active {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.camera-btn svg {
+  width: 40px;
+  height: 40px;
+}
+
+/* --- Card Preview --- */
+.card-preview {
+  text-align: center;
+}
+
+.card-preview img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 1rem;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* --- Extracting State --- */
+.extracting-state {
+  text-align: center;
+  padding: 2rem;
+}
+
+.extracting-state p {
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+}
+
+/* --- Form --- */
+.capture-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.form-section-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--neon-cyan);
+  margin-bottom: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 0.35rem;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 1rem 0 1.5rem;
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* --- Toast (reuse from dashboard) --- */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  z-index: 3000;
+  opacity: 0;
+  transition: all 0.3s;
+  max-width: 360px;
+  text-align: center;
+}
+
+.toast.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast--success {
+  background: rgba(0, 255, 136, 0.15);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: #00FF88;
+}
+
+.toast--error {
+  background: rgba(255, 0, 255, 0.15);
+  border: 1px solid rgba(255, 0, 255, 0.3);
+  color: var(--neon-magenta);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .capture-page {
+    padding-top: 60px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .camera-btn {
+    padding: 1.5rem;
+  }
+
+  .camera-btn svg {
+    width: 32px;
+    height: 32px;
+  }
+}
