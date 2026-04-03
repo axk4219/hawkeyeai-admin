@@ -134,7 +134,10 @@ function setDefaultDate() {
   document.getElementById('eventDate').value = today;
 }
 
+var isSubmitting = false;
 async function handleSubmit() {
+  if (isSubmitting) return;
+  isSubmitting = true;
   var firstName = document.getElementById('firstName').value.trim();
   var lastName = document.getElementById('lastName').value.trim();
   var eventName = document.getElementById('eventName').value.trim();
@@ -195,6 +198,7 @@ async function handleSubmit() {
     console.error('Save failed:', err);
     showToast('Failed to save: ' + err.message, 'error');
   } finally {
+    isSubmitting = false;
     submitBtn.disabled = false;
     submitBtn.textContent = 'Save Contact & Generate Email';
   }

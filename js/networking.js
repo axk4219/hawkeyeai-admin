@@ -114,9 +114,9 @@ function renderPending() {
       '<div class="net-card-event">' + escapeHtml(contact.event_name) + ' - ' + formatDate(contact.event_date) + '</div>' +
       '<div class="net-card-subject">' + subject + '</div>' +
       '<div class="net-card-actions">' +
-        '<button class="btn btn-outline btn-small" onclick="openPreviewModal(\'' + contact.id + '\')">Preview</button>' +
-        '<button class="btn btn-primary btn-small" onclick="approveEmail(\'' + contact.id + '\')">Approve & Send</button>' +
-        '<button class="btn btn-danger btn-small" onclick="rejectEmail(\'' + contact.id + '\')">Reject</button>' +
+        (email ? '<button class="btn btn-outline btn-small" onclick="openPreviewModal(\'' + contact.id + '\')">Preview</button>' +
+        '<button class="btn btn-primary btn-small" onclick="approveEmail(\'' + contact.id + '\')">Approve & Send</button>' : '') +
+        '<button class="btn btn-danger btn-small" onclick="deleteContact(\'' + contact.id + '\')">Delete</button>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -230,6 +230,19 @@ async function approveEmail(contactId) {
       var btn2 = card.querySelector('.btn-primary');
       if (btn2) { btn2.disabled = false; btn2.textContent = 'Approve & Send'; }
     }
+  }
+}
+
+async function deleteContact(contactId) {
+  if (!confirm('Delete this contact and its email draft?')) return;
+  try {
+    await supabase.from('networking_emails').delete().eq('contact_id', contactId);
+    await supabase.from('networking_contacts').delete().eq('id', contactId);
+    showToast('Contact deleted.', 'success');
+    await loadAllData();
+  } catch (err) {
+    console.error('Delete failed:', err);
+    showToast('Failed to delete: ' + err.message, 'error');
   }
 }
 
