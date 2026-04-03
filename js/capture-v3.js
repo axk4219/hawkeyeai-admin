@@ -3,8 +3,8 @@
    Handles camera, OCR, form, and Supabase save
    ============================================================ */
 
-// OCR via Supabase Edge Function (Claude Vision)
-const OCR_WORKER_URL = 'https://ddoglggqvtdzjtiruomq.supabase.co/functions/v1/ocr-business-card';
+// OCR via Supabase Edge Function (Claude Vision) - window.OCR_OVERRIDE_URL set in HTML takes priority
+const OCR_WORKER_URL = window.OCR_OVERRIDE_URL || 'https://ddoglggqvtdzjtiruomq.supabase.co/functions/v1/ocr-business-card';
 
 let capturedImageBase64 = null;
 

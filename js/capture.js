@@ -4,7 +4,7 @@
    ============================================================ */
 
 // OCR Worker URL - update after deploying the Cloudflare Worker
-const OCR_WORKER_URL = 'https://hawkeye-networking-ocr.anthony-419.workers.dev/ocr';
+const OCR_WORKER_URL = window.OCR_OVERRIDE_URL || 'https://ddoglggqvtdzjtiruomq.supabase.co/functions/v1/ocr-business-card';
 
 let capturedImageBase64 = null;
 

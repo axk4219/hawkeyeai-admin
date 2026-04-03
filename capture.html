@@ -166,6 +166,10 @@
   <!-- Toast Notification -->
   <div class="toast" id="toast"></div>
 
+  <script data-cfasync="false">
+    // Force correct OCR URL regardless of cached JS
+    window.OCR_OVERRIDE_URL = 'https://ddoglggqvtdzjtiruomq.supabase.co/functions/v1/ocr-business-card';
+  </script>
   <script data-cfasync="false" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script data-cfasync="false" src="js/auth.js"></script>
   <script data-cfasync="false" src="js/capture-v3.js"></script>
