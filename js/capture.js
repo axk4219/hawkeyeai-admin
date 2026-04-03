@@ -97,8 +97,14 @@ async function extractFromCard() {
     if (!response.ok) throw new Error('OCR request failed');
 
     var data = await response.json();
+    console.log('OCR response:', JSON.stringify(data));
     fillFormFromOCR(data);
-    showToast('Card data extracted! Please review the fields below.', 'success');
+    var filledCount = [data.first_name, data.last_name, data.email, data.phone, data.company, data.job_title].filter(Boolean).length;
+    if (filledCount > 0) {
+      showToast('Extracted ' + filledCount + ' fields! Please review below.', 'success');
+    } else {
+      showToast('Could not read card clearly. Please enter details manually.', 'error');
+    }
   } catch (err) {
     console.error('OCR error:', err);
     showToast('Could not read card automatically. Please enter details manually.', 'error');
