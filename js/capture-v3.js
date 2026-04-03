@@ -3,8 +3,8 @@
    Handles camera, OCR, form, and Supabase save
    ============================================================ */
 
-// OCR Worker URL - update after deploying the Cloudflare Worker
-const OCR_WORKER_URL = 'https://hawkeye-networking-ocr.anthony-419.workers.dev/ocr';
+// OCR via Supabase Edge Function (Claude Vision)
+const OCR_WORKER_URL = 'https://ddoglggqvtdzjtiruomq.supabase.co/functions/v1/ocr-business-card';
 
 let capturedImageBase64 = null;
 
