@@ -2,6 +2,16 @@
    Hawk Eye AI - Networking Follow-ups Page
    ============================================================ */
 
+/* Fix nav logo overflow */
+.nav-inner {
+  height: 72px !important;
+}
+
+.nav-logo img {
+  height: 60px !important;
+  max-height: 60px !important;
+}
+
 .networking-page {
   padding-top: 72px;
   min-height: 100vh;
