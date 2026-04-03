@@ -208,7 +208,15 @@ async function approveEmail(contactId) {
         to: contact.email,
         subject: email.subject,
         body_html: email.body_html,
-        contact_name: contact.first_name + ' ' + contact.last_name
+        contact_name: contact.first_name + ' ' + contact.last_name,
+        first_name: contact.first_name,
+        last_name: contact.last_name,
+        phone: contact.phone,
+        company: contact.company,
+        job_title: contact.job_title,
+        event_name: contact.event_name,
+        event_date: contact.event_date,
+        notes: contact.notes
       })
     });
 
