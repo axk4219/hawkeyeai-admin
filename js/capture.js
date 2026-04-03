@@ -126,7 +126,8 @@ function fillFormFromOCR(data) {
 
 // ---- Form ----
 function initForm() {
-  document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+  // Click handler is on the button's onclick attribute in HTML
+  // No addEventListener needed - that caused duplicate submissions
 }
 
 function setDefaultDate() {
