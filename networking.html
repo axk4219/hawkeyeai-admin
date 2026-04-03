@@ -204,9 +204,9 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="js/auth.js"></script>
-  <script>
+  <script data-cfasync="false" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script data-cfasync="false" src="js/auth.js"></script>
+  <script data-cfasync="false">
     (async function() {
       var session = await Auth.getSession();
       if (!session) {
@@ -222,6 +222,6 @@
       document.getElementById('networkingContent').classList.remove('hidden');
     })();
   </script>
-  <script src="js/networking.js"></script>
+  <script data-cfasync="false" src="js/networking.js"></script>
 </body>
 </html>
