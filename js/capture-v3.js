@@ -205,27 +205,17 @@ async function handleSubmit() {
   }
 }
 
-// ---- Email Draft Generation ----
+// ---- Email Draft Generation (server-side) ----
 async function generateEmailDraft(contact) {
-  var subject = 'Great meeting you at ' + contact.event_name + ', ' + contact.first_name + '!';
-  var bodyHtml = buildEmailHtml(contact);
-
-  var result = await supabase
-    .from('networking_emails')
-    .insert({
-      contact_id: contact.id,
-      subject: subject,
-      body_html: bodyHtml,
-      status: 'draft'
-    });
-
-  if (result.error) throw result.error;
-
-  // Update contact status
-  await supabase
-    .from('networking_contacts')
-    .update({ status: 'draft_ready' })
-    .eq('id', contact.id);
+  var resp = await fetch('https://ddoglggqvtdzjtiruomq.supabase.co/functions/v1/generate-email-draft', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contact_id: contact.id })
+  });
+  if (!resp.ok) {
+    var err = await resp.json().catch(function() { return {}; });
+    throw new Error(err.details || err.error || 'Draft generation failed');
+  }
 }
 
 function buildEmailHtml(contact) {
