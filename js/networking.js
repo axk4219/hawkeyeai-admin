@@ -3,7 +3,7 @@
    ============================================================ */
 
 // n8n webhook for sending approved emails via Gmail
-const N8N_SEND_WEBHOOK = 'https://n8n.srv1426838.hstgr.cloud/webhook/test-webhook-reg';
+const SEND_EMAIL_URL = 'https://ddoglggqvtdzjtiruomq.supabase.co/functions/v1/send-networking-email';
 
 // ---- State ----
 var contacts = [];
@@ -206,7 +206,7 @@ async function approveEmail(contactId) {
     if (result.error) throw result.error;
 
     // Call n8n webhook to send via Gmail
-    var sendResult = await fetch(N8N_SEND_WEBHOOK, {
+    var sendResult = await fetch(SEND_EMAIL_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
