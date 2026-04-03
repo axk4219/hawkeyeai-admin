@@ -420,7 +420,7 @@ async function generateEmailDraftFromContact(contact) {
 function buildEmailHtml(contact) {
   var props = getIndustryProps(contact);
   var propsHtml = props.map(function(p) {
-    return '<p style="font-size:15px;color:#555;line-height:1.5;margin:0 0 8px;padding-left:15px;">&#8226; ' + escapeHtml(p) + '</p>';
+    return '<tr><td style="padding:6px 0 6px 0;font-size:15px;color:#A0A0B5;line-height:1.5;"><span style="color:#00FFFF;margin-right:8px;">&#9656;</span>' + escapeHtml(p) + '</td></tr>';
   }).join('');
 
   var companyRef = contact.company ? ' like ' + escapeHtml(contact.company) : '';
@@ -429,43 +429,45 @@ function buildEmailHtml(contact) {
 
   return '<!DOCTYPE html>\n' +
 '<html>\n<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>\n' +
-'<body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">\n' +
-'<table role="presentation" width="100%" style="background:#f4f4f4;padding:20px 0;">\n<tr><td align="center">\n' +
-'<table role="presentation" width="600" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">\n' +
-'<tr><td style="background:linear-gradient(135deg,#0A0A0F 0%,#14141F 100%);padding:30px 40px;text-align:center;">' +
-'<img src="https://admin.hawkeyeai.io/assets/optimized/logo-300.png" alt="Hawk Eye AI" width="120" style="display:block;margin:0 auto;">' +
+'<body style="margin:0;padding:0;background:#0A0A0F;font-family:Arial,Helvetica,sans-serif;">\n' +
+'<table role="presentation" width="100%" style="background:#0A0A0F;padding:20px 0;">\n<tr><td align="center">\n' +
+'<table role="presentation" width="600" style="max-width:600px;width:100%;border-radius:12px;overflow:hidden;">\n' +
+'<tr><td style="background:#0A0A0F;padding:40px 40px 20px;text-align:center;">' +
+'<img src="https://www.hawkeyeai.io/admin.hawkeyeai.io/assets/optimized/pwa-icon.jpg" alt="Hawk Eye AI" width="100" style="display:block;margin:0 auto;border-radius:16px;">' +
 '</td></tr>\n' +
-'<tr><td style="padding:40px;">' +
-'<p style="font-size:16px;color:#333;line-height:1.6;margin:0 0 20px;">Hi ' + escapeHtml(contact.first_name) + ',</p>' +
-'<p style="font-size:16px;color:#333;line-height:1.6;margin:0 0 20px;">' +
-'It was great connecting with you at <strong>' + escapeHtml(contact.event_name) + '</strong>!' + notesLine + '</p>' +
-'<p style="font-size:16px;color:#333;line-height:1.6;margin:0 0 20px;">' +
-"I'm Anthony, founder of <strong>Hawk Eye AI</strong> - we build custom AI solutions that help businesses" + companyRef + ' automate their operations and scale without scaling headcount.</p>' +
-'<table role="presentation" width="100%" style="margin:25px 0;background:#f8f9fa;border-radius:8px;border-left:4px solid #00CCCC;">' +
-'<tr><td style="padding:20px 25px;">' +
-'<p style="font-size:14px;font-weight:bold;color:#0A0A0F;margin:0 0 12px;text-transform:uppercase;letter-spacing:0.5px;">Here\'s what we can do for you:</p>' +
-propsHtml +
+'<tr><td style="padding:0 40px;"><table role="presentation" width="100%"><tr><td style="height:2px;background:linear-gradient(90deg,#00FFFF,#FF00FF);border-radius:2px;"></td></tr></table></td></tr>\n' +
+'<tr><td style="background:#0A0A0F;padding:30px 40px;">' +
+'<p style="font-size:17px;color:#F0F0F5;line-height:1.7;margin:0 0 20px;">Hi ' + escapeHtml(contact.first_name) + ',</p>' +
+'<p style="font-size:16px;color:#A0A0B5;line-height:1.7;margin:0 0 20px;">' +
+'It was great connecting with you at <strong style="color:#F0F0F5;">' + escapeHtml(contact.event_name) + '</strong>!' + notesLine + '</p>' +
+'<p style="font-size:16px;color:#A0A0B5;line-height:1.7;margin:0 0 25px;">' +
+"I'm Anthony, founder of <strong style=\"color:#00FFFF;\">Hawk Eye AI</strong> - we build custom AI solutions that help businesses" + companyRef + ' automate their operations and scale without scaling headcount.</p>' +
+'<table role="presentation" width="100%" style="margin:0 0 25px;background:#14141F;border-radius:10px;border:1px solid #1E1E30;">' +
+'<tr><td style="padding:24px 28px;">' +
+'<p style="font-size:12px;font-weight:bold;color:#00FFFF;margin:0 0 14px;text-transform:uppercase;letter-spacing:1.5px;">What we can do for you</p>' +
+'<table role="presentation" width="100%">' + propsHtml + '</table>' +
 '</td></tr></table>' +
-'<p style="font-size:16px;color:#333;line-height:1.6;margin:0 0 30px;">' +
-"I'd love to show you what we could build for " + companyCtaRef + ". Would you be open to a quick 15-minute call?</p>" +
-'<table role="presentation" width="100%"><tr><td align="center">' +
-'<a href="https://www.hawkeyeai.io/contact" style="display:inline-block;background:linear-gradient(135deg,#00CCCC,#2E8BFF);color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:8px;font-size:16px;font-weight:bold;letter-spacing:0.5px;">Book a Quick Call</a>' +
+'<p style="font-size:16px;color:#A0A0B5;line-height:1.7;margin:0 0 30px;">' +
+"I'd love to show you what we could build for <strong style=\"color:#F0F0F5;\">" + companyCtaRef + "</strong>. Would you be open to a quick 15-minute call?</p>" +
+'<table role="presentation" width="100%"><tr><td align="center" style="padding:5px 0 30px;">' +
+'<a href="https://www.hawkeyeai.io/contact" style="display:inline-block;background:linear-gradient(135deg,#00FFFF 0%,#2E8BFF 50%,#FF00FF 100%);color:#0A0A0F;text-decoration:none;padding:16px 40px;border-radius:10px;font-size:16px;font-weight:bold;letter-spacing:0.5px;">Book a Quick Call</a>' +
 '</td></tr></table>' +
-'<p style="font-size:16px;color:#333;line-height:1.6;margin:30px 0 0;">Looking forward to staying in touch,</p>' +
+'<p style="font-size:16px;color:#A0A0B5;line-height:1.7;margin:0;">Looking forward to staying in touch,</p>' +
 '</td></tr>\n' +
-'<tr><td style="padding:0 40px 30px;">' +
-'<table role="presentation" width="100%" style="border-top:1px solid #eee;padding-top:20px;"><tr><td>' +
-'<p style="font-size:16px;font-weight:bold;color:#0A0A0F;margin:0;">Anthony Kamycki Jr.</p>' +
-'<p style="font-size:14px;color:#666;margin:4px 0 0;">Founder, Hawk Eye AI</p>' +
-'<p style="font-size:14px;color:#666;margin:4px 0 0;">' +
-'<a href="mailto:anthony@hawkeyeai.io" style="color:#00CCCC;text-decoration:none;">anthony@hawkeyeai.io</a>' +
-' &nbsp;|&nbsp; ' +
-'<a href="https://www.hawkeyeai.io" style="color:#00CCCC;text-decoration:none;">hawkeyeai.io</a></p>' +
-'<p style="font-size:14px;color:#666;margin:4px 0 0;">New York, NY</p>' +
+'<tr><td style="background:#0A0A0F;padding:0 40px 30px;">' +
+'<table role="presentation" width="100%" style="border-top:1px solid #1E1E30;padding-top:20px;"><tr>' +
+'<td>' +
+'<p style="font-size:16px;font-weight:bold;color:#F0F0F5;margin:0;">Anthony Kamycki Jr.</p>' +
+'<p style="font-size:14px;color:#A0A0B5;margin:4px 0 0;">Founder, Hawk Eye AI</p>' +
+'<p style="font-size:14px;margin:8px 0 0;">' +
+'<a href="mailto:anthony@hawkeyeai.io" style="color:#00FFFF;text-decoration:none;">anthony@hawkeyeai.io</a>' +
+' <span style="color:#1E1E30;">&nbsp;|&nbsp;</span> ' +
+'<a href="https://www.hawkeyeai.io" style="color:#00FFFF;text-decoration:none;">hawkeyeai.io</a></p>' +
+'<p style="font-size:13px;color:#606075;margin:4px 0 0;">New York, NY</p>' +
 '</td></tr></table></td></tr>\n' +
-'<tr><td style="background:#0A0A0F;padding:20px 40px;text-align:center;">' +
-'<p style="font-size:12px;color:#888;margin:0;">Hawk Eye AI - Custom AI Automation for Growing Businesses</p>' +
-'<p style="font-size:12px;color:#666;margin:8px 0 0;">New York, NY</p>' +
+'<tr><td style="background:#111118;padding:20px 40px;text-align:center;border-top:1px solid #1E1E30;">' +
+'<p style="font-size:12px;color:#606075;margin:0;">Hawk Eye AI - Custom AI Automation for Growing Businesses</p>' +
+'<p style="font-size:11px;color:#606075;margin:8px 0 0;">New York, NY</p>' +
 '</td></tr>\n' +
 '</table>\n</td></tr></table>\n</body>\n</html>';
 }
