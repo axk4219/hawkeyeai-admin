@@ -198,14 +198,7 @@ async function approveEmail(contactId) {
   }
 
   try {
-    // Update email status to approved
-    var result = await supabase
-      .from('networking_emails')
-      .update({ status: 'approved' })
-      .eq('id', email.id);
-    if (result.error) throw result.error;
-
-    // Call n8n webhook to send via Gmail
+    // Send email first, only update status if it succeeds
     var sendResult = await fetch(SEND_EMAIL_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -219,9 +212,12 @@ async function approveEmail(contactId) {
       })
     });
 
-    if (!sendResult.ok) throw new Error('n8n webhook failed');
+    if (!sendResult.ok) {
+      var errBody = await sendResult.json().catch(function() { return {}; });
+      throw new Error(errBody.details || errBody.error || 'Send failed');
+    }
 
-    // Update statuses
+    // Only update statuses after successful send
     await supabase.from('networking_emails').update({ status: 'sent', sent_at: new Date().toISOString() }).eq('id', email.id);
     await supabase.from('networking_contacts').update({ status: 'sent' }).eq('id', contactId);
 
