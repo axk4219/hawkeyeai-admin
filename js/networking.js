@@ -3,7 +3,7 @@
    ============================================================ */
 
 // n8n webhook for sending approved emails via Gmail
-const N8N_SEND_WEBHOOK = 'https://n8n.srv1426838.hstgr.cloud/webhook/send-networking-email';
+const N8N_SEND_WEBHOOK = 'https://n8n.srv1426838.hstgr.cloud/webhook/test-webhook-reg';
 
 // ---- State ----
 var contacts = [];
