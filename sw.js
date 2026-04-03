@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hawkeye-capture-v1';
+const CACHE_NAME = 'hawkeye-capture-v2';
 const ASSETS = [
   '/capture.html',
   '/css/styles.css',
