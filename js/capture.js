@@ -12,7 +12,7 @@ let capturedImageBase64 = null;
 (async function init() {
   var session = await Auth.getSession();
   if (!session) {
-    window.location.href = 'index.html';
+    window.location.href = 'index.html?returnTo=capture.html';
     return;
   }
 
@@ -120,7 +120,7 @@ function fillFormFromOCR(data) {
 
 // ---- Form ----
 function initForm() {
-  document.getElementById('contactForm').addEventListener('submit', handleSubmit);
+  document.getElementById('submitBtn').addEventListener('click', handleSubmit);
 }
 
 function setDefaultDate() {
@@ -128,9 +128,7 @@ function setDefaultDate() {
   document.getElementById('eventDate').value = today;
 }
 
-async function handleSubmit(e) {
-  e.preventDefault();
-
+async function handleSubmit() {
   var firstName = document.getElementById('firstName').value.trim();
   var lastName = document.getElementById('lastName').value.trim();
   var eventName = document.getElementById('eventName').value.trim();

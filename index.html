@@ -138,11 +138,15 @@
       showError('Supabase failed to load: ' + e.message);
     }
 
+    // Get return URL from query params (e.g. ?returnTo=capture.html)
+    var params = new URLSearchParams(window.location.search);
+    var returnTo = params.get('returnTo') || 'dashboard.html';
+
     // Check if already logged in
     if (sb) {
       sb.auth.getSession().then(function(result) {
         if (result.data && result.data.session) {
-          window.location.href = 'dashboard.html';
+          window.location.href = returnTo;
         }
       });
     }
@@ -187,7 +191,7 @@
         }
 
         if (result.data && result.data.session) {
-          window.location.href = 'dashboard.html';
+          window.location.href = returnTo;
         } else {
           showError('No session returned. Make sure the user exists in Supabase Auth > Users.');
           loginBtn.disabled = false;
