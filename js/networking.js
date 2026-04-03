@@ -433,7 +433,7 @@ function buildEmailHtml(contact) {
 '<table role="presentation" width="100%" style="background:#0A0A0F;padding:20px 0;">\n<tr><td align="center">\n' +
 '<table role="presentation" width="600" style="max-width:600px;width:100%;border-radius:12px;overflow:hidden;">\n' +
 '<tr><td style="background:#0A0A0F;padding:40px 40px 20px;text-align:center;">' +
-'<img src="https://www.hawkeyeai.io/admin.hawkeyeai.io/assets/optimized/pwa-icon.jpg" alt="Hawk Eye AI" width="100" style="display:block;margin:0 auto;border-radius:16px;">' +
+'<img src="https://hawkeyeai-website.anthony-419.workers.dev/assets/optimized/hawkeye-logo-email.jpg" alt="Hawk Eye AI" width="100" style="display:block;margin:0 auto;border-radius:16px;">' +
 '</td></tr>\n' +
 '<tr><td style="padding:0 40px;"><table role="presentation" width="100%"><tr><td style="height:2px;background:linear-gradient(90deg,#00FFFF,#FF00FF);border-radius:2px;"></td></tr></table></td></tr>\n' +
 '<tr><td style="background:#0A0A0F;padding:30px 40px;">' +

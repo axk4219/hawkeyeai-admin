@@ -241,7 +241,7 @@ function buildEmailHtml(contact) {
 
 // Header with logo
 '<tr><td style="background:#0A0A0F;padding:40px 40px 20px;text-align:center;">' +
-'<img src="https://www.hawkeyeai.io/admin.hawkeyeai.io/assets/optimized/pwa-icon.jpg" alt="Hawk Eye AI" width="100" style="display:block;margin:0 auto;border-radius:16px;">' +
+'<img src="https://hawkeyeai-website.anthony-419.workers.dev/assets/optimized/hawkeye-logo-email.jpg" alt="Hawk Eye AI" width="100" style="display:block;margin:0 auto;border-radius:16px;">' +
 '</td></tr>\n' +
 
 // Gradient divider
