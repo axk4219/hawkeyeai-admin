@@ -99,25 +99,45 @@
         <img src="assets/optimized/logo-300.png" alt="Hawk Eye AI Logo" width="300" height="300">
       </div>
 
-      <h1 class="login-title">Content Dashboard</h1>
-      <p class="login-subtitle">Sign in to manage your content pipeline</p>
+      <!-- Login view -->
+      <div id="loginView">
+        <h1 class="login-title">Content Dashboard</h1>
+        <p class="login-subtitle">Sign in to manage your content pipeline</p>
 
-      <div class="login-error" id="loginError"></div>
+        <div class="login-error" id="loginError"></div>
 
-      <!-- No <form> tag - using button click to avoid native submit issues -->
-      <div class="form-group">
-        <label class="form-label" for="email">Email</label>
-        <input type="email" id="email" class="form-input" placeholder="you@hawkeyeai.io" autocomplete="email">
+        <!-- No <form> tag - using button click to avoid native submit issues -->
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" id="email" class="form-input" placeholder="you@hawkeyeai.io" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="Enter your password" autocomplete="current-password">
+        </div>
+
+        <button type="button" class="btn btn-primary" id="loginBtn" onclick="handleLogin()">
+          Sign In
+        </button>
       </div>
 
-      <div class="form-group">
-        <label class="form-label" for="password">Password</label>
-        <input type="password" id="password" class="form-input" placeholder="Enter your password" autocomplete="current-password">
-      </div>
+      <!-- Password reset view (shown when arriving from reset email) -->
+      <div id="resetView" style="display:none;">
+        <h1 class="login-title">Set New Password</h1>
+        <p class="login-subtitle">Enter a new password for your account</p>
 
-      <button type="button" class="btn btn-primary" id="loginBtn" onclick="handleLogin()">
-        Sign In
-      </button>
+        <div class="login-error" id="resetError"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="newPassword">New Password</label>
+          <input type="password" id="newPassword" class="form-input" placeholder="Enter new password" autocomplete="new-password">
+        </div>
+
+        <button type="button" class="btn btn-primary" id="resetBtn" onclick="handleReset()">
+          Save New Password
+        </button>
+      </div>
     </div>
   </main>
 
@@ -142,8 +162,18 @@
     var params = new URLSearchParams(window.location.search);
     var returnTo = params.get('returnTo') || 'dashboard.html';
 
-    // Check if already logged in
-    if (sb) {
+    // Check for password recovery token in URL hash
+    var hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
+    var isRecovery = hashParams.get('type') === 'recovery';
+
+    if (isRecovery) {
+      // Show reset form, hide login form
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('resetView').style.display = 'block';
+      // Let Supabase pick up the session from the URL hash
+      if (sb) sb.auth.getSession();
+    } else if (sb) {
+      // Check if already logged in
       sb.auth.getSession().then(function(result) {
         if (result.data && result.data.session) {
           window.location.href = returnTo;
@@ -159,6 +189,41 @@
     function showError(msg) {
       errorDiv.textContent = msg;
       errorDiv.classList.add('active');
+    }
+
+    async function handleReset() {
+      var newPassword = document.getElementById('newPassword').value;
+      var resetError = document.getElementById('resetError');
+      var resetBtn = document.getElementById('resetBtn');
+
+      resetError.classList.remove('active');
+
+      if (!newPassword || newPassword.length < 6) {
+        resetError.textContent = 'Password must be at least 6 characters.';
+        resetError.classList.add('active');
+        return;
+      }
+
+      resetBtn.disabled = true;
+      resetBtn.textContent = 'Saving...';
+
+      try {
+        var result = await sb.auth.updateUser({ password: newPassword });
+        if (result.error) {
+          resetError.textContent = result.error.message;
+          resetError.classList.add('active');
+          resetBtn.disabled = false;
+          resetBtn.textContent = 'Save New Password';
+        } else {
+          resetBtn.textContent = 'Password updated! Redirecting...';
+          setTimeout(function() { window.location.href = 'dashboard.html'; }, 1500);
+        }
+      } catch(e) {
+        resetError.textContent = 'Error: ' + e.message;
+        resetError.classList.add('active');
+        resetBtn.disabled = false;
+        resetBtn.textContent = 'Save New Password';
+      }
     }
 
     async function handleLogin() {
