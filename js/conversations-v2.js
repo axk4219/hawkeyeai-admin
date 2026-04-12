@@ -51,9 +51,12 @@
     document.getElementById('navUserEmail').textContent = session.user.email;
     document.getElementById('logoutBtn').addEventListener('click', Auth.signOut);
 
-    // Initialize SEPARATE Supabase client for luhnod (chatbot project)
+    // Initialize SEPARATE Supabase client for luhnod (chatbot project).
+    // auth.js has overwritten window.supabase with a CLIENT instance for ddog,
+    // so we use the SDK ref captured before auth.js loaded.
     try {
-      luhnodClient = window.supabase.createClient(LUHNOD_URL, LUHNOD_ANON_KEY);
+      var sdk = window._supabaseSdk || window.supabase;
+      luhnodClient = sdk.createClient(LUHNOD_URL, LUHNOD_ANON_KEY);
     } catch (e) {
       console.error('Luhnod client init failed:', e);
     }
