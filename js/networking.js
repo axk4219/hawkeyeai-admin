@@ -19,7 +19,24 @@ var currentPreviewContactId = null;
   await loadAllData();
   initTabs();
   initModals();
+  initAutoRefresh();
 })();
+
+// Reload data when the tab becomes visible or window regains focus, so drafts
+// generated server-side after the page loaded show up without a manual refresh.
+function initAutoRefresh() {
+  var lastReload = Date.now();
+  var MIN_INTERVAL_MS = 2000;
+  function maybeReload() {
+    if (Date.now() - lastReload < MIN_INTERVAL_MS) return;
+    lastReload = Date.now();
+    loadAllData();
+  }
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') maybeReload();
+  });
+  window.addEventListener('focus', maybeReload);
+}
 
 // ---- Data Loading ----
 async function loadAllData() {

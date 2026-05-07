@@ -138,7 +138,7 @@ function setDefaultDate() {
 var isSubmitting = false;
 async function handleSubmit() {
   if (isSubmitting) return;
-  isSubmitting = true;
+
   var firstName = document.getElementById('firstName').value.trim();
   var lastName = document.getElementById('lastName').value.trim();
   var eventName = document.getElementById('eventName').value.trim();
@@ -152,6 +152,8 @@ async function handleSubmit() {
     showToast('Event name is required.', 'error');
     return;
   }
+
+  isSubmitting = true;
 
   var email = document.getElementById('email').value.trim();
   var hasEmail = email && email.length > 0;
@@ -184,12 +186,12 @@ async function handleSubmit() {
       .single();
 
     if (result.error) throw result.error;
-    var saved = result.data;
 
-    // Generate email draft if email exists
+    // Email draft is generated server-side by the trg_generate_email_draft trigger
+    // (see project.md). Calling generateEmailDraft from the client too caused
+    // duplicate drafts because the trigger fires in parallel.
     if (hasEmail) {
-      await generateEmailDraft(saved);
-      showToast('Contact saved! Email draft ready for review.', 'success');
+      showToast('Contact saved! Email draft will be ready for review in a few seconds.', 'success');
     } else {
       showToast('Contact saved! Flagged for email lookup.', 'success');
     }
@@ -205,168 +207,11 @@ async function handleSubmit() {
   }
 }
 
-// ---- Email Draft Generation (server-side) ----
-async function generateEmailDraft(contact) {
-  var resp = await fetch('https://ddoglggqvtdzjtiruomq.supabase.co/functions/v1/generate-email-draft', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contact_id: contact.id })
-  });
-  if (!resp.ok) {
-    var err = await resp.json().catch(function() { return {}; });
-    throw new Error(err.details || err.error || 'Draft generation failed');
-  }
-}
-
-function buildEmailHtml(contact) {
-  var props = getIndustryProps(contact);
-  var propsHtml = props.map(function(p) {
-    return '<tr><td style="padding:6px 0 6px 0;font-size:15px;color:#A0A0B5;line-height:1.5;"><span style="color:#00FFFF;margin-right:8px;">&#9656;</span>' + escapeHtml(p) + '</td></tr>';
-  }).join('');
-
-  var companyRef = contact.company ? ' like ' + escapeHtml(contact.company) : '';
-  var companyCtaRef = contact.company ? escapeHtml(contact.company) : 'your business';
-  var notesLine = contact.notes ? ' I really enjoyed our conversation.' : '';
-
-  return '<!DOCTYPE html>\n' +
-'<html>\n<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>\n' +
-'<body style="margin:0;padding:0;background:#0A0A0F;font-family:Arial,Helvetica,sans-serif;">\n' +
-'<table role="presentation" width="100%" style="background:#0A0A0F;padding:20px 0;">\n<tr><td align="center">\n' +
-'<table role="presentation" width="600" style="max-width:600px;width:100%;border-radius:12px;overflow:hidden;">\n' +
-
-// Header with logo
-'<tr><td style="background:#0A0A0F;padding:40px 40px 20px;text-align:center;">' +
-'<img src="https://hawkeyeai-website.anthony-419.workers.dev/assets/optimized/hawkeye-logo-email.jpg" alt="Hawk Eye AI" width="100" style="display:block;margin:0 auto;border-radius:16px;">' +
-'</td></tr>\n' +
-
-// Gradient divider
-'<tr><td style="padding:0 40px;"><table role="presentation" width="100%"><tr><td style="height:2px;background:linear-gradient(90deg,#00FFFF,#FF00FF);border-radius:2px;"></td></tr></table></td></tr>\n' +
-
-// Body
-'<tr><td style="background:#0A0A0F;padding:30px 40px;">' +
-'<p style="font-size:17px;color:#F0F0F5;line-height:1.7;margin:0 0 20px;">Hi ' + escapeHtml(contact.first_name) + ',</p>' +
-'<p style="font-size:16px;color:#A0A0B5;line-height:1.7;margin:0 0 20px;">' +
-'It was great connecting with you at <strong style="color:#F0F0F5;">' + escapeHtml(contact.event_name) + '</strong>!' + notesLine + '</p>' +
-'<p style="font-size:16px;color:#A0A0B5;line-height:1.7;margin:0 0 25px;">' +
-"I'm Anthony, founder of <strong style=\"color:#00FFFF;\">Hawk Eye AI</strong> - we build custom AI solutions that help businesses" + companyRef + ' automate their operations and scale without scaling headcount.</p>' +
-
-// Value Props card
-'<table role="presentation" width="100%" style="margin:0 0 25px;background:#14141F;border-radius:10px;border:1px solid #1E1E30;">' +
-'<tr><td style="padding:24px 28px;">' +
-'<p style="font-size:12px;font-weight:bold;color:#00FFFF;margin:0 0 14px;text-transform:uppercase;letter-spacing:1.5px;">What we can do for you</p>' +
-'<table role="presentation" width="100%">' + propsHtml + '</table>' +
-'</td></tr></table>' +
-
-'<p style="font-size:16px;color:#A0A0B5;line-height:1.7;margin:0 0 30px;">' +
-"I'd love to show you what we could build for <strong style=\"color:#F0F0F5;\">" + companyCtaRef + "</strong>. Would you be open to a quick 15-minute call?</p>" +
-
-// CTA Button
-'<table role="presentation" width="100%"><tr><td align="center" style="padding:5px 0 30px;">' +
-'<a href="https://www.hawkeyeai.io/contact" style="display:inline-block;background:linear-gradient(135deg,#00FFFF 0%,#2E8BFF 50%,#FF00FF 100%);color:#0A0A0F;text-decoration:none;padding:16px 40px;border-radius:10px;font-size:16px;font-weight:bold;letter-spacing:0.5px;">Book a Quick Call</a>' +
-'</td></tr></table>' +
-
-'<p style="font-size:16px;color:#A0A0B5;line-height:1.7;margin:0;">Looking forward to staying in touch,</p>' +
-'</td></tr>\n' +
-
-// Signature
-'<tr><td style="background:#0A0A0F;padding:0 40px 30px;">' +
-'<table role="presentation" width="100%" style="border-top:1px solid #1E1E30;padding-top:20px;"><tr>' +
-'<td>' +
-'<p style="font-size:16px;font-weight:bold;color:#F0F0F5;margin:0;">Anthony Kamycki Jr.</p>' +
-'<p style="font-size:14px;color:#A0A0B5;margin:4px 0 0;">Founder, Hawk Eye AI</p>' +
-'<p style="font-size:14px;margin:8px 0 0;">' +
-'<a href="mailto:anthony@hawkeyeai.io" style="color:#00FFFF;text-decoration:none;">anthony@hawkeyeai.io</a>' +
-' <span style="color:#1E1E30;">&nbsp;|&nbsp;</span> ' +
-'<a href="https://www.hawkeyeai.io" style="color:#00FFFF;text-decoration:none;">hawkeyeai.io</a></p>' +
-'<p style="font-size:13px;color:#606075;margin:4px 0 0;">New York, NY</p>' +
-'</td></tr></table></td></tr>\n' +
-
-// Footer
-'<tr><td style="background:#111118;padding:20px 40px;text-align:center;border-top:1px solid #1E1E30;">' +
-'<p style="font-size:12px;color:#606075;margin:0;">Hawk Eye AI - Custom AI Automation for Growing Businesses</p>' +
-'<p style="font-size:11px;color:#606075;margin:8px 0 0;">New York, NY</p>' +
-'</td></tr>\n' +
-
-'</table>\n</td></tr></table>\n</body>\n</html>';
-}
-
-function getIndustryProps(contact) {
-  var title = (contact.job_title || '').toLowerCase();
-  var company = (contact.company || '').toLowerCase();
-  var notes = (contact.notes || '').toLowerCase();
-
-  // Real estate
-  if (title.includes('real estate') || title.includes('broker') || title.includes('agent') ||
-      company.includes('real estate') || company.includes('realty') || notes.includes('real estate')) {
-    return [
-      'AI chatbots that capture and qualify leads around the clock',
-      'Automated showing scheduling and follow-up sequences',
-      'Smart lead routing so no prospect falls through the cracks'
-    ];
-  }
-
-  // Healthcare
-  if (title.includes('doctor') || title.includes('medical') || title.includes('health') ||
-      company.includes('health') || company.includes('medical') || company.includes('dental') ||
-      notes.includes('healthcare') || notes.includes('medical')) {
-    return [
-      'AI-powered patient intake that reduces front desk workload by 60%',
-      'Automated appointment booking and reminders',
-      'HIPAA-conscious chatbots for patient FAQ handling'
-    ];
-  }
-
-  // Legal
-  if (title.includes('attorney') || title.includes('lawyer') || title.includes('legal') ||
-      company.includes('law') || company.includes('legal') || notes.includes('legal') || notes.includes('law firm')) {
-    return [
-      'AI-powered client intake that qualifies prospects 24/7',
-      'Automated document processing and case routing',
-      'Smart scheduling that eliminates back-and-forth emails'
-    ];
-  }
-
-  // E-commerce
-  if (title.includes('ecommerce') || title.includes('e-commerce') || title.includes('retail') ||
-      company.includes('shop') || company.includes('store') || notes.includes('ecommerce') || notes.includes('e-commerce')) {
-    return [
-      'AI customer support that handles order inquiries instantly',
-      'Automated product recommendations that boost average order value',
-      'Workflow automation for inventory and fulfillment'
-    ];
-  }
-
-  // Home services
-  if (title.includes('contractor') || title.includes('plumber') || title.includes('hvac') ||
-      company.includes('plumbing') || company.includes('hvac') || company.includes('roofing') ||
-      notes.includes('home service') || notes.includes('contractor')) {
-    return [
-      'AI receptionist that books jobs and qualifies leads 24/7',
-      'Automated follow-up sequences that close more estimates',
-      'Workflow automation that eliminates manual scheduling'
-    ];
-  }
-
-  // Default
-  return [
-    'AI chatbots that handle customer inquiries 24/7',
-    'Workflow automation that saves 20+ hours per week',
-    'Custom integrations tailored to your specific business needs'
-  ];
-}
-
 // ---- Helpers ----
 function resetForm() {
   document.getElementById('contactForm').reset();
   resetCamera();
   setDefaultDate();
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  var div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
 }
 
 function showToast(message, type) {
